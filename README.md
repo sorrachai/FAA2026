@@ -2,10 +2,10 @@
 
 Repository for the course [Formalizing Analysis of Algorithms](https://vvz.ethz.ch/Vorlesungsverzeichnis/lerneinheit.view?lerneinheitId=206318&semkez=2026W&ansicht=LEHRVERANSTALTUNGEN&lang=en), offered in Autumn Semester 2026 at ETH Zurich.
 
-## Organization of the Exercises
+## Organization of the Homework
 
-- New exercises are uploaded to this repository every Wednesday. You submit your solutions on Moodle by 23:59 on the Friday of the following week, which gives you nine days to work on them.
-- The exercises account for **40%** of your final grade. You will receive feedback within one week of the deadline.
+- New homework are uploaded to this repository every Wednesday. You submit your solutions on Moodle by 23:59 on the Friday of the following week, which gives you nine days to work on them.
+- The homework account for **40%** of your final grade. You will receive feedback within one week of the deadline.
 - You have two late days for the semester. Each late day extends the deadline of one homework by one day; you may not spend both on the same homework. Late days are consumed automatically when you submit late.
 - Unless an exercise explicitly states otherwise, you may not use LLM-generated solutions, in whole or in part. We always expect you to fully understand the proofs and code you submit.
 - Each week we select a few students and ask them to defend their solutions in a short individual Zoom session. To get full points, you must be able to explain the reasoning and ideas behind your solution clearly. Selected students are notified in advance.
@@ -13,7 +13,7 @@ Repository for the course [Formalizing Analysis of Algorithms](https://vvz.ethz.
 
 ## Getting Started with Lean
 
-In the exercises, you will write [Lean](https://github.com/leanprover/lean4) code. Lean is a functional programming language with a very expressive type system that makes it possible to state and check mathematical proofs. This project is built with [Lake](https://lean-lang.org/doc/reference/latest/Build-Tools-and-Distribution/Lake/), Lean's build system and package manager. We will work with [Mathlib](https://github.com/leanprover-community/mathlib4) and [CSLib](https://github.com/leanprover/cslib), two large bodies of existing formalization work in mathematics and computer science, respectively.
+In this class, you will write [Lean](https://github.com/leanprover/lean4) code. Lean is a functional programming language with a very expressive type system that makes it possible to state and check mathematical proofs. This project is built with [Lake](https://lean-lang.org/doc/reference/latest/Build-Tools-and-Distribution/Lake/), Lean's build system and package manager. We will work with [Mathlib](https://github.com/leanprover-community/mathlib4) and [CSLib](https://github.com/leanprover/cslib), two large bodies of existing formalization work in mathematics and computer science, respectively.
 
 ### Install Elan
 
