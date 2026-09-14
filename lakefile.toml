@@ -1,0 +1,26 @@
+name = "FAA2026"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["Exercises", "Lectures"]
+
+[leanOptions]
+pp.unicode.fun = true # pretty-prints `fun a ↦ b`
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.33.1"
+
+[[require]]
+name = "cslib"
+scope = "leanprover"
+rev = "v4.33.1"
+
+[[lean_lib]]
+name = "Exercises"
+
+[[lean_lib]]
+name = "Lectures"
