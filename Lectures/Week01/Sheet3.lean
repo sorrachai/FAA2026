@@ -24,23 +24,70 @@ def f : ℕ → ℕ → Prop :=
       x = y
 
 #check f       -- f : ℕ → ℕ → Prop
-#check f 0     -- f 0 : ℕ → Prop    (_partial application_)
+#check f 0     -- f 0 : ℕ → Prop    (*partial application*)
 #check f 0 0   -- f 0 0 : Prop
 
 
-/- ### New tactics
-* `rewrite` [h] -- replace a term in the goal with an equivalent term [h].
-* `rw`          -- rewrite, followed by trying to close the goal by rfl.
+/-!
+### New tactic `rewrite`
+
+Suppose we have an equality `h : a = b`.
+The tactic `rewrite [h]` replaces occurrences of `a` by `b`.
+
+We can rewrite both in the goal and in a hypothesis.
+* `rewrite [h]` replaces `a` by `b` in the goal.
+* `rewrite [h] at hP` replaces `a` by `b` in the hypothesis `hP`.
+* `rewrite [← h]` rewrites in the opposite direction, replacing `b` by `a`.
+
+The shorter tactic `rw` behaves like `rewrite` and then tries to close
+the resulting goal using `rfl`.
+
+**Example 1: rewrite using an equality**
+
+Suppose the goal is `a + 1 = b + 1` and we have `h : a = b`.
+
+* Tactic state **before** `rewrite [h]`:
+  *Hypothesis*: `h : a = b`
+  *Goal*: `⊢ a + 1 = b + 1`
+
+* Tactic state **after** `rewrite [h]`:
+  *Hypothesis*: `h : a = b`
+  *New goal*: `⊢ b + 1 = b + 1`
+-/
+example (a b : ℕ) (h : a = b) : a + 1 = b + 1 := by
+  rewrite [h]   -- replace a by b
+  rfl           -- b+1 = b+1
+
+example (a b : ℕ) (h : a = b) : a + 1 = b + 1 := by
+  rewrite [← h] -- replace b by a
+  rfl           -- a+1 = a+1
+
+/-!
+**Example 2: rewrite using a function definition**
+
+We can also give `rewrite` the name of a definition. It then unfolds
+that definition in the goal.
+
+* Tactic state **before** `rw [f]`:
+  *Goal*: `⊢ f 0 0`
+
+* Tactic state **after unfolding** `f`:
+  *New goal*: `⊢ 0 = 0`
+
+The tactic `rw` closes this last goal automatically using `rfl`.
+-/
+example : f 0 0 := by -- Prove using `rewrite`
+  sorry
+
+example : f 0 0 := by -- Prove using `rw`
+  sorry
+
+
+/-! ### More new tactics
 * `symm`        -- transform a goal (or hypothesis) `x = a` to `a = x`
 * `assumption`  -- there is a hypothesis `h` s.t. `exact h` can close the goal
 -/
 
-example : f 0 0 := by
-  rewrite [f]
-  rfl
-
-example : f 0 0 := by
-  rw [f]
 
 example (x : ℕ) : f 0 x → x = 0 := by
   sorry
@@ -54,7 +101,7 @@ example (x y : ℕ) : f 0 x ∧ f 0 y → x = y := by sorry
 /-! Bonus:
 * `by_contra`     -- assume the negation of the goal and prove `False`
 * `contradiction` -- we are done because we have a proof of `h' : ¬ P` and `h : P`
-* `trivial`       -- apply `rfl` or `assumption` or `contradiction` tactics
+* `trivial`       -- apply simple tactics such as `rfl`, `assumption`, or `contradiction`
 -/
 
 -- Prove by contradiction
