@@ -1,7 +1,7 @@
 name = "FAA2026"
 version = "0.1.0"
 keywords = ["math"]
-defaultTargets = ["Exercises", "Lectures"]
+defaultTargets = ["Lectures"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
@@ -20,7 +20,5 @@ scope = "leanprover"
 rev = "v4.33.1"
 
 [[lean_lib]]
-name = "Exercises"
-
-[[lean_lib]]
 name = "Lectures"
+globs = ["Lectures.+"]
