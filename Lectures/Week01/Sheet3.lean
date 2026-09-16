@@ -39,7 +39,7 @@ We can rewrite both in the goal and in a hypothesis.
 * `rewrite [h] at hP` replaces `a` by `b` in the hypothesis `hP`.
 * `rewrite [← h]` rewrites in the opposite direction, replacing `b` by `a`.
 
-The shorter tactic `rw` behaves like `rewrite` and then tries to close
+The tactic `rw` behaves like `rewrite` and then tries to close
 the resulting goal using `rfl`.
 
 **Example 1: rewrite using an equality**
@@ -68,10 +68,10 @@ example (a b : ℕ) (h : a = b) : a + 1 = b + 1 := by
 We can also give `rewrite` the name of a definition. It then unfolds
 that definition in the goal.
 
-* Tactic state **before** `rw [f]`:
+* Tactic state **before** `rewrite [f]`:
   *Goal*: `⊢ f 0 0`
 
-* Tactic state **after unfolding** `f`:
+* Tactic state **after** `rewrite [f]`:
   *New goal*: `⊢ 0 = 0`
 
 The tactic `rw` closes this last goal automatically using `rfl`.
@@ -84,7 +84,7 @@ example : f 0 0 := by -- Prove using `rw`
 
 
 /-! ### More new tactics
-* `by_contra`     -- assume the negation of the goal and prove `False`
+* `by_contra h`   -- assume the negation `h` of the goal and prove `False`
 * `contradiction` -- we are done because we have contradicting hypotheses `hnp : ¬ P` and `hp : P`
 * `trivial`       -- apply simple tactics such as `rfl`, `assumption`, or `contradiction`
 -/

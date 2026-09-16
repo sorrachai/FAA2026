@@ -118,11 +118,6 @@ example : P = P := by
 example : 4 = 4 := by
   sorry
 
-#check Eq.symm -- Eq.symm ... (h : a = b) : b = a
-
-example (a b : ℕ) (h : a = b) : b = a := by
-  exact (Eq.symm h)
-
 
 /-! ### exact
 * `exact t` -- close a goal `P` by providing a term `t : P`.
@@ -133,6 +128,11 @@ example (hP : P) : P := by
 
 example (hP : P) (hQ : Q) : Q := by
   sorry
+
+#check Eq.symm -- Eq.symm ... (h : a = b) : b = a
+
+example (a b : ℕ) (h : a = b) : b = a := by
+  exact (Eq.symm h)
 
 
 /-! ### intro
