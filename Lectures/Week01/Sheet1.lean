@@ -69,7 +69,7 @@ To prove `P : Prop` means to construct a term `h : P`.
 /-!
 # How to prove a theorem in Lean
 Under the hood, Lean verifies a proof by type-checking. Below are two examples.
-The details how type-checking works are not our main focus in this course.
+The details of how type-checking works are not our main focus in this course.
 -/
 
 theorem modus_ponens (P Q : Prop) (h_pq : P → Q) (h_p : P) : Q :=

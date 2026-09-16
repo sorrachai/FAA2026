@@ -84,10 +84,25 @@ example : f 0 0 := by -- Prove using `rw`
 
 
 /-! ### More new tactics
+* `by_contra`     -- assume the negation of the goal and prove `False`
+* `contradiction` -- we are done because we have contradicting hypotheses `hnp : ¬ P` and `hp : P`
+* `trivial`       -- apply simple tactics such as `rfl`, `assumption`, or `contradiction`
+-/
+
+-- Prove by contradiction
+example (a b : ℕ) (h1 : a = b) : a = b := by
+  by_contra h2
+  contradiction -- h2 : ¬(a = b), h1 : a = b
+  -- alternatively, we can also tell Lean the contradicting hypotheses directly using `exact h2 h1`
+
+theorem modus_tollens (P Q : Prop) (hPQ : P → Q) (hnQ : ¬ Q) : ¬ P := by
+  sorry
+
+
+/-!
 * `symm`        -- transform a goal (or hypothesis) `x = a` to `a = x`
 * `assumption`  -- there is a hypothesis `h` s.t. `exact h` can close the goal
 -/
-
 
 example (x : ℕ) : f 0 x → x = 0 := by
   sorry
@@ -96,15 +111,3 @@ example (x : ℕ) : f 0 x → x = 0 := by
 example (x : ℕ) : f x 1 → x ≠ 2 := by sorry
 
 example (x y : ℕ) : f 0 x ∧ f 0 y → x = y := by sorry
-
-
-/-! Bonus:
-* `by_contra`     -- assume the negation of the goal and prove `False`
-* `contradiction` -- we are done because we have a proof of `h' : ¬ P` and `h : P`
-* `trivial`       -- apply simple tactics such as `rfl`, `assumption`, or `contradiction`
--/
-
--- Prove by contradiction
-example (h1 : a = b) : a = b:= by sorry
-
-example (x : ℕ) : f x 1 → x ≠ 2 := by sorry

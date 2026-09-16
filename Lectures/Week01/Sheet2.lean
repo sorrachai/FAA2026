@@ -39,6 +39,12 @@ example (h : P → Q) (h2 : P) : Q := by
   apply h at h2 -- **Forward**: apply hypothesis `h` at hypothesis `h2`
   exact h2
 
+-- To keep `h2 : P`, we can also define a new local proof instead of transforming `h2`
+example (h : P → Q) (h2 : P) : Q := by
+  let h2' := h h2 -- A new local proof `h2' : Q`, we still have the old `h2 : P`
+  exact h2'
+
+
 -- Example 2a: Using apply to transform the goal
 example (h1 : P → Q) (h2 : Q → R) (h3 : P) : R := by
   -- **Backward**: apply hypothesis at the goal
