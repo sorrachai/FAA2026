@@ -39,8 +39,11 @@ example (x : α) : x ∈ A ∨ x ∉ A := by
 -- Example: cases tactics
 example : ∀ x ∈ A ∪ B, x ∈ A ∪ B ∪ C:= by
   intro x hx
+  rw [mem_union] at hx
   cases hx
-  · left
+  · rw [mem_union]
+    left
+    rw [mem_union]
     left
     exact h
   · left
@@ -61,20 +64,18 @@ lemma my_union_subset_imp :  A ⊆ C ∧ B ⊆ C → A ∪ B ⊆ C := by sorry
 -- running example
 lemma my_union_subset_iff :  A ⊆ C ∧ B ⊆ C ↔ A ∪ B ⊆ C := by
   constructor
-  intro a
-  exact my_union_subset_imp A B C a
-  intro
-  rw [subset_def] at a
-  constructor
-  intro x hx
-  apply a
-  simp only [mem_union]
-  left
-  exact hx
-  intro x hx
-  apply a
-  right
-  exact hx
+  · intro a
+    exact my_union_subset_imp A B C a
+  · intro
+    rw [subset_def] at a
+    constructor
+    · rw [subset_def]
+      intro x hx
+      apply a
+      rw [mem_union]
+      left
+      exact hx
+    · sorry
 
 -- Exercise 4: you may want to use my_union_subset_iff
 example : B ⊆ A → C ⊆ A → B ∪ C ⊆ A := by sorry
@@ -87,17 +88,21 @@ example : B ⊆ A → C ⊆ A → B ∪ C ⊆ A := by sorry
 lemma inter_comm : A ∩ B = B ∩ A := by
   ext x
   constructor
-  rintro ⟨a,b⟩
-  exact ⟨b,a⟩
-  rintro ⟨a,b⟩
-  exact ⟨b,a⟩
+  · intro a
+    rw [mem_inter_iff]
+    rw [mem_inter_iff] at a
+    obtain ⟨ha,hb⟩ := a
+    exact ⟨hb,ha⟩
+  · sorry
 
 -- example
 lemma absorption_law : A ∩ (A ∪ B) = A := by
   ext x
   constructor
   · intro
-    exact a.1
+    rw [mem_inter_iff] at a
+    obtain ⟨ha,hb⟩ := a
+    assumption
   · intro
     constructor
     · exact a

@@ -66,6 +66,6 @@ def IsOdd (n : ℤ) : Prop := ∃ k, n = 2 * k + 1
 example (n:ℤ) (h : IsEven n) :  IsOdd (n+1) := by
   sorry
 
--- Exercise 1. Prove that the sum of two even numbers is even.
+-- Exercise . Prove that the sum of two even numbers is even.
 example (a b:ℤ) (h_a : IsEven a) (h_b : IsEven b) : IsEven (a + b) := by
   sorry
