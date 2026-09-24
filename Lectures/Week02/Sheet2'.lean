@@ -53,9 +53,15 @@ def S2 : Set (ℕ) := {10,20}
 #check 10 ∈ S1
 #check S1 ⊆ S2
 
+#check mem_singleton_iff
 example : S1 ⊆ S2 := by
   rw [S1,S2]
-  sorry
+  rw [subset_def]
+  intro x hx
+  rw [mem_insert_iff]
+  rw [mem_singleton_iff] at hx
+  left
+  assumption
 
 /-! For technical details
  (1) def Set (α : Type u) := α → Prop.
@@ -68,12 +74,12 @@ example : S1 ⊆ S2 := by
 example : (10 ∈ S1) = (S1 10) := by rfl
 
 --  (3) How to define an emptyset?
-def my_emptyset : Set ℕ := sorry
-example: my_emptyset = ∅  := sorry
+def my_emptyset : Set ℕ := fun _ ↦ False
+example: my_emptyset = ∅  := rfl
 
 --  (4) How to define a universe set?
-def my_univ : Set ℕ := sorry
-example: my_univ = univ := sorry
+def my_univ : Set ℕ := fun _ ↦ True
+example: my_univ = univ := rfl
 
 
 variable {α : Type*}
@@ -103,9 +109,44 @@ example : A ∩ B ⊆ B := by
 
 -- Exercise 1: resolve the sorry
 #check subset_def
-example : A ⊆ B → B ⊆ C → A ⊆ C := sorry
+example : A ⊆ B → B ⊆ C → A ⊆ C := by
+-- Gokul Rajiv
+  -- repeat rw [subset_def]
+  -- intro HAB HBC x HA
+  -- exact HBC x (HAB x HA)
+-- Sorrachai
+  intro h1 h2
+  rw [subset_def]
+  rw [subset_def] at h1
+  rw [subset_def] at h2
+  intro x h
+  apply h2
+  apply h1
+  assumption
+
+-- Sebastian Thomas - Wednesday, 23 September 2026, 3:01 PM
+--Forward Apply:
+example : A ⊆ B → B ⊆ C → A ⊆ C := by
+  intro h_ab h_bc
+  rw [subset_def]
+  rw [subset_def] at h_ab
+  rw [subset_def] at h_bc
+  intro x h
+  apply h_ab at h
+  apply h_bc at h
+  assumption
+--```
 
 -- Exercise 2:  More exercises
 #check Set.inter_def
-example : A ∩ B ⊆ B := by sorry
-example : A ⊆ B → A ⊆ C → A ⊆ B ∩ C := by sorry
+example : A ∩ B ⊆ B := by
+  rw [subset_def, inter_def]
+  intro x h
+  rw [sep_mem_eq, mem_inter_iff] at h
+  cases h
+  assumption
+
+example : A ⊆ B → A ⊆ C → A ⊆ B ∩ C := by
+  intro a b
+  rw [subset_inter_iff]
+  exact ⟨a, b⟩
