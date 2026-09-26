@@ -9,103 +9,105 @@ import Mathlib.Tactic -- imports all of the tactics in Lean's maths library
 set_option autoImplicit false
 set_option tactic.hygienic false
 
-
-/-
-So far we have seen the following tactics:
-- `intro` - introduce hypotheses for implications
-- `exact` - provide exact proof terms
-- `constructor` - split conjunctions and biconditionals
-- `apply` - use implications and functions backwards
-- `rw` / `rewrite` - rewrite using equalities
-- `unfold` - expand definitions
-- `use` - provide witnesses for existentials
-- `obtain` - extract components from conjunctions
+/-! New tactics
+ * `left`  -- change the goal of the form P ∨ Q to P
+ * `right` -- change the goal of the form P ∨ Q to Q
+ * `cases` -- deal with cases.
+              That is, if you have h: P ∨ Q then cases h will automatically split into two goals.
+              One goal assume P and the other goal assume Q.
+ * `by_cases` -- prove by cases
 -/
-
-
--- In this week, we will learn more tactics that allows us to prove basic set theory statement.
-
-/-! Set theory
-
-In Lean, a set is always a set of objects of some type.
-* If α is a type, then the type Set α consists of sets of elements of α
-* For example, the type Set ℕ consists of sets of natural numbers.
-  Given n : ℕ and s : Set ℕ, the expression n ∈ s means n is a member of s
-* Two special sets for Set α: ∅ and univ: ∅ is the set having zero elements from α
-  and univ is the set of all elements from α
-
-Basic set operations are built-in.
-* s ⊆ t ↔ ∀ x ∈ s, x ∈ t
-* s ∪ t ↔ ∀ x, x ∈ s ∨ x ∈ t
-* s ∩ t ↔ ∀ x, x ∈ s ∧ x ∈ t
--/
-
-#check Set.subset_def
-#check Set.union_def
-#check Set.inter_def
 
 open Set
-def S1 : Set (ℕ) := {10}
-def S2 : Set (ℕ) := {10,20}
-
-
-#check S1
-#check 10 ∈ S1
-#check S1 ⊆ S2
-
-example : S1 ⊆ S2 := by
-  rw [S1,S2]
-  sorry
-
-/-! For technical details
- (1) def Set (α : Type u) := α → Prop.
-     So a set of elements of type α is just a boolean function α → Prop
-     saying whether an element belongs.
- (2) Membership is defined as:
-     def Set.Mem (x : α) (s : Set α) : Prop := s x
-     So x ∈ s is syntactic sugar for s x
--/
-example : (10 ∈ S1) = (S1 10) := by rfl
-
---  (3) How to define an emptyset?
-def my_emptyset : Set ℕ := sorry
-example: my_emptyset = ∅  := sorry
-
---  (4) How to define a universe set?
-def my_univ : Set ℕ := sorry
-example: my_univ = univ := sorry
-
-
 variable {α : Type*}
 variable (A B C D : Set α)
 
-example : A ⊆ A := by
+-- Example: Left/Right tactics
+example : A ⊆ A ∪ B := by
   rw [subset_def]
-  intros
-  assumption
+  intro x hx
+  rw [mem_union]
+  left
+  exact hx
 
-example : A ⊆ A := by rfl
+-- Example: by_cases tactics
+example (x : α) : x ∈ A ∨ x ∉ A := by
+  by_cases h : x ∈ A
+  · left; exact h
+  · right; exact h
 
-example : ∅ ⊆ A := by
-  rw [subset_def]
-  intros
-  contradiction
+-- Example: cases tactics
+example : ∀ x ∈ A ∪ B, x ∈ A ∪ B ∪ C:= by
+  intro x hx
+  rw [mem_union] at hx
+  cases hx
+  · rw [mem_union]
+    left
+    rw [mem_union]
+    left
+    exact h
+  · left
+    right
+    exact h
 
--- running examples
-#check mem_inter_iff
+-- Exercise 3: Cases tactics. You are allowed to use *only* these two lemmas.
+#check mem_union
 #check subset_def
-example : A ∩ B ⊆ B := by
-  rw [subset_def]
-  intro x h
-  rw [mem_inter_iff] at h
-  obtain ⟨ha,hb⟩ := h
-  assumption
 
--- Exercise 1: resolve the sorry
+lemma my_union_subset_imp :  A ⊆ C ∧ B ⊆ C → A ∪ B ⊆ C := by sorry
+
+-- Extend my_union_subset_imp to my_union_subset_iff
+-- You are allowed to use *only* these two lemmas.
+#check mem_union
 #check subset_def
-example : A ⊆ B → B ⊆ C → A ⊆ C := sorry
 
--- Exercise 2:  More exercises
-#check Set.inter_def
-example : A ∩ B ⊆ B := by sorry
-example : A ⊆ B → A ⊆ C → A ⊆ B ∩ C := by sorry
+-- running example
+lemma my_union_subset_iff :  A ⊆ C ∧ B ⊆ C ↔ A ∪ B ⊆ C := by
+  constructor
+  · intro a
+    exact my_union_subset_imp A B C a
+  · intro
+    rw [subset_def] at a
+    constructor
+    · rw [subset_def]
+      intro x hx
+      apply a
+      rw [mem_union]
+      left
+      exact hx
+    · sorry
+
+-- Exercise 4: you may want to use my_union_subset_iff
+example : B ⊆ A → C ⊆ A → B ∪ C ⊆ A := by sorry
+
+/-! New tactics
+ * `ext`  -- extensionality. Proving that two functions are identical. Since sets are functions in Lean, `ext` can be used to prove set equality.
+-/
+
+-- example
+lemma inter_comm : A ∩ B = B ∩ A := by
+  ext x
+  constructor
+  · intro a
+    rw [mem_inter_iff]
+    rw [mem_inter_iff] at a
+    obtain ⟨ha,hb⟩ := a
+    exact ⟨hb,ha⟩
+  · sorry
+
+-- example
+lemma absorption_law : A ∩ (A ∪ B) = A := by
+  ext x
+  constructor
+  · intro
+    rw [mem_inter_iff] at a
+    obtain ⟨ha,hb⟩ := a
+    assumption
+  · intro
+    constructor
+    · exact a
+    · left
+      exact a
+
+-- Exercise 5
+lemma union_comm : A ∪ B = B ∪ A := by sorry
