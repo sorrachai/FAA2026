@@ -5,7 +5,7 @@ Authors: Sorrachai Yingchareonthawornchai
 -/
 
 import Mathlib.Tactic -- imports all of the tactics in Lean's maths library
-import Waterfall
+import waterfall
 
 set_option autoImplicit false
 set_option tactic.hygienic false
