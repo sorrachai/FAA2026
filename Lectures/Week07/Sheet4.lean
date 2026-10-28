@@ -1,3 +1,19 @@
+/-
+This file includes code adapted from CSLib's
+Cslib/Algorithms/Lean/MergeSort/MergeSort.lean:
+https://github.com/leanprover/cslib/blob/f4a472560f78c59bbedd795fe041ec507f7d0582/Cslib/Algorithms/Lean/MergeSort/MergeSort.lean
+
+The following declarations are adapted from that source:
+  timeMergeSortRec, clog2_half_le, clog2_floor_half_le,
+  some_algebra, T, timeMergeSortRec_le.
+
+Original copyright and attribution:
+Copyright (c) 2026 Sorrachai Yingchareonthawornhcai. All rights reserved.
+Authors: Sorrachai Yingchareonthawornhcai
+Released under the Apache License, Version 2.0.
+See LICENSE for the license text.
+-/
+
 import Mathlib.Tactic
 import Cslib.Algorithms.Lean.TimeM
 import waterfall
@@ -9,7 +25,9 @@ set_option tactic.hygienic false
 open Cslib.Algorithms.Lean
 
 #check TimeM
+
 open TimeM
+
 /-- Recurrence relation for the time complexity of merge sort.
 For a list of length `n`, this counts the total number of comparisons:
 - Base cases: 0 comparisons for lists of length 0 or 1

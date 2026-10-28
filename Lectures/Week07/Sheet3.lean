@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Sorrachai Yingchareonthawornchai. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Sorrachai Yingchareonthawornchai
+-/
+
 import Mathlib.Tactic
 import Cslib.Algorithms.Lean.TimeM
 import waterfall
@@ -44,7 +50,7 @@ def mergeSort (xs : List ℕ) : TimeM ℕ (List ℕ) :=  do
 
 -- Correctnes of Merge sort
 
-@[simp, grind] def Nat.MinOfList (a :ℕ ) (t: List ℕ) : Prop := ∀ y ∈ t, a ≤ y
+@[simp, grind] def Nat.MinOfList (a : ℕ) (t : List ℕ) : Prop := ∀ y ∈ t, a ≤ y
 
 -- inductive predicate
 inductive Sorted : List ℕ → Prop
@@ -63,7 +69,8 @@ theorem sorted_min {x : ℕ} {xs : List ℕ} (hxs : Sorted (x :: xs)) :  x.MinOf
       grind
   · exact a_1
 
-theorem sorted_is_preserved_by_min_cons {a : ℕ} {t : List ℕ} (hmin : a.MinOfList t) (ht : Sorted t) : Sorted (a :: t) := by
+theorem sorted_is_preserved_by_min_cons {a : ℕ} {t : List ℕ} (hmin : a.MinOfList t)
+  (ht : Sorted t) : Sorted (a :: t) := by
   exact Sorted.cons_min a t hmin ht
 
 theorem sorted_suffix {x : ℕ} {xs : List ℕ} (hxs : Sorted (x :: xs)) : Sorted xs := sorry
@@ -81,3 +88,9 @@ theorem sorted_merge {l1 l2 : List ℕ} (hxs : Sorted l1)
 
 -- Let's do this one as an example.
 theorem MSMCorrect (xs : List ℕ) : Sorted (mergeSort xs).ret := by sorry
+
+-- Time comlexity
+def f (n : ℕ) : ℕ := sorry -- f(n) = 2*n log n
+
+-- Let's analyze time complexity
+example (xs : List ℕ) : (mergeSort xs).time < f (xs.length) := sorry

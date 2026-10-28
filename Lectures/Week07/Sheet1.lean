@@ -27,11 +27,13 @@ def len : List ℕ →  ℕ
 
 -- lenT with do notations
 def lenT : List ℕ → TimeM ℕ ℕ
-| [] => return 0
+| [] => return 0 -- produce ⟨0, 0⟩
 | _ :: xs => do
-    ✓
-    let len_xs ← lenT xs
-    ✓ return (1 + len_xs)
+    ✓ -- add a tick ⟨unit, 1⟩; discard its unit result, keep its cost
+    let len_xs ← lenT xs -- get len_xs from the recursive result ⟨len_xs, t'⟩;
+                        -- include t' in the accumulated cost
+    ✓ return (1 + len_xs) -- add another tick, then produce ⟨1 + len_xs, 0⟩
+-- The entire do block produces: ⟨1 + len_xs, 1 + t' + 1⟩
 
 -- Example usage
 #eval lenT []
