@@ -124,11 +124,14 @@ def reverse : List ℕ → List ℕ
 
 def reverseT : List ℕ → TimeM ℕ (List ℕ)
 | [] => return []
-| x :: xs => sorry
+| x :: xs => do 
+  ✓[xs.length] return (← reverseT xs) ++ [x]
 
 -- Prove correctness
 theorem reverseT_correctness (xs : List ℕ) : (reverseT xs).ret = reverse xs := by
-  sorry
+  fun_induction reverseT xs 
+  · simp only [TimeM.ret_pure, reverse]
+  · simp only [bind_pure_comp, TimeM.ret_bind, TimeM.ret_map, ih1, reverse]
 
 -- Hint: You'll need a helper lemma about the time of append
 theorem reverseT_time_quadratic (xs : List ℕ) :
@@ -137,8 +140,10 @@ theorem reverseT_time_quadratic (xs : List ℕ) :
   simp only [one_mul]
   induction xs with
   | nil => simp [reverseT]
-  | cons x xs ih =>
-      sorry
+  | cons x xs ih => 
+    simp only [reverseT, bind_pure_comp, TimeM.time_bind, TimeM.time_tick, TimeM.time_map,
+      List.length_cons]
+    grind
 
 -- ============================================================================
 -- EXERCISE 3: Tail-recursive reverse with accumulator
@@ -148,19 +153,25 @@ theorem reverseT_time_quadratic (xs : List ℕ) :
 -- Expected time complexity: n (linear, much better than reverseT!)
 
 def reverseTailT : List ℕ → List ℕ → TimeM ℕ (List ℕ)
-| [], acc => sorry
-| x :: xs, acc => sorry
+| [], acc => do 
+  return acc
+| x :: xs, acc => do 
+  ✓ return (← reverseTailT xs (x :: acc))
 
 def reverseTail : List ℕ → List ℕ → List ℕ
 | [], acc => acc
 | x :: xs, acc => reverseTail xs (x :: acc)
 
 -- Prove correctness
-theorem reverseTailT_correctness (xs acc : List ℕ):
+theorem reverseTailT_correctness (xs acc : List ℕ) :
   (reverseTailT xs acc).ret = reverseTail xs acc := by
-  sorry
+  fun_induction reverseTailT xs acc 
+  · simp only [TimeM.ret_pure, reverseTail]
+  · simp only [TimeM.ret_bind, ih1, reverseTail]
 
 -- Prove linear time complexity
-theorem reverseTailT_time (xs acc : List ℕ):
+theorem reverseTailT_time (xs acc : List ℕ) :
   (reverseTailT xs acc).time = xs.length := by
-  sorry
+  fun_induction reverseTailT xs acc 
+  · simp only [TimeM.time_pure, List.length_nil] 
+  · simp only [TimeM.time_bind, TimeM.time_tick, ih1, add_comm, List.length_cons]

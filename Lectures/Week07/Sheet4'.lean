@@ -84,14 +84,27 @@ theorem timeMergeSortRec_le (n : ℕ) : timeMergeSortRec n ≤ T n := by
 
 -- Exercise
 theorem merge_ret_length_eq_sum (xs ys : List ℕ) :
-    (merge xs ys).ret.length = xs.length + ys.length := sorry
+    (merge xs ys).ret.length = xs.length + ys.length := by 
+  fun_induction merge xs ys <;> simp
+  · split_ifs 
+    <;> simp [ih1, ih2, List.length]
+    <;> ring
 
 -- Exercise
 @[simp] theorem mergeSort_same_length (xs : List ℕ) :
-    (mergeSort xs).ret.length = xs.length := sorry
+    (mergeSort xs).ret.length = xs.length := by 
+  fun_induction mergeSort xs <;> simp
+  · rw [merge_ret_length_eq_sum, ih1, ih2]
+    grind
 
 -- Exercise
-@[simp] theorem merge_time (xs ys : List ℕ) : (merge xs ys).time ≤ xs.length + ys.length := sorry
+@[simp] theorem merge_time (xs ys : List ℕ) : (merge xs ys).time ≤ xs.length + ys.length := by 
+  fun_induction merge xs ys <;> simp 
+  · split_ifs <;> simp 
+    · grw [ih2, List.length]
+      omega
+    · grw [ih1, List.length]
+      omega
 
 -- Relate the algorithm with recurrence relation.
 theorem mergeSort_time_le (xs : List ℕ) :

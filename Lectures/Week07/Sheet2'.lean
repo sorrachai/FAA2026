@@ -8,7 +8,6 @@ import Mathlib.Tactic
 import Cslib.Algorithms.Lean.TimeM
 import waterfall
 
-
 -- Analysis of Insertion Sort
 namespace mysorting
 
@@ -38,26 +37,27 @@ inductive sorted : List ℕ → Prop
 | empty : sorted []
 | min (a : ℕ ) (t : List ℕ) : Nat.leqAll a t → sorted t → sorted (a :: t)
 
-theorem sorted_sublist (y : ℕ) (ys : List ℕ) (h : sorted (y :: ys))
-  : Nat.leqAll y ys ∧ sorted ys := by
+theorem sorted_sublist (y : ℕ) (ys : List ℕ) (h : sorted (y :: ys)) :
+  Nat.leqAll y ys ∧ sorted ys := by
   waterfall
 
 theorem sorted_xyys_of_sorted_yys (x y : ℕ) (ys : List ℕ) (h_1 : x ≤ y) (h : sorted (y :: ys)) :
-  sorted (x :: y :: ys) := by waterfall
+  sorted (x :: y :: ys) := by
+  waterfall
 
 theorem sorted_y_insert (x y : ℕ) (ys : List ℕ) (h_1 : y < x) (h2 : sorted (insert x ys))
-  (h : Nat.leqAll y ys) : sorted (y :: insert x ys) := by waterfall [sorted_xyys_of_sorted_yys]
+  (h : Nat.leqAll y ys) : sorted (y :: insert x ys) := by
+  waterfall [sorted_xyys_of_sorted_yys]
 
 lemma insert_into_sorted (x : ℕ) (xs : List ℕ) (h : sorted xs) : sorted (insert x xs) := by
   waterfall [sorted_y_insert]
 
-lemma correctness (xs : List ℕ) : sorted (IS x) := by
-  waterfall [insert_into_sorted,sorted_y_insert]
+lemma correctness (xs : List ℕ) : sorted (IS xs) := by
+  waterfall [insert_into_sorted]
 
 -- Time complexity
 open Cslib.Algorithms.Lean
 #check TimeM
-
 
 -- def insert (x : ℕ) (xs : List ℕ) : List ℕ :=
 --   match xs with
@@ -79,9 +79,9 @@ def insertT (x : ℕ) (xs : List ℕ) : TimeM ℕ (List ℕ) :=
 
 -- # interpretation in each line
 -- If the return type is a monad, say (`List ℕ`), then
--- `let ret ← insertT left`
+-- `let ret ← insertT x ys`
 -- This line means you can treat `ret` as type `List ℕ` and
--- let notation tell Lean to put `sortedLeft` into a box
+-- let notation tell Lean to put `ret` into a box
 -- If the return type is not a monad, you can use normal `let` with `:=` notation.
 
 def IST : List ℕ → TimeM ℕ (List ℕ)
@@ -92,34 +92,34 @@ def IST : List ℕ → TimeM ℕ (List ℕ)
 
 #eval IST [3,2,1,100,5,100,90,80]
 
-theorem insert_eq_insertT (x : ℕ) (xs : List ℕ) : (insertT x xs).ret = insert x xs := by waterfall
+theorem insert_eq_insertT (x : ℕ) (xs : List ℕ) : (insertT x xs).ret = insert x xs := by
+  waterfall
 
 theorem correct_IST (xs : List ℕ) : (IST xs).ret = IS xs := by
   fun_induction IST
   · rfl
   · expose_names
     simp only [TimeM.ret_bind, IS]
-    rw [ih1]
-    apply insert_eq_insertT
+    rw [ih1, insert_eq_insertT]
 
 #eval IST [1,2,3,4]
 
-theorem time_insert (x : ℕ) (xs : List ℕ) : (insertT x xs).time ≤ (xs.length) := by
+theorem time_insert (x : ℕ) (xs : List ℕ) : (insertT x xs).time ≤ xs.length := by
   fun_induction insertT <;> grind
 
 @[grind =] theorem insert_length_eq (y : ℕ) (ys : List ℕ) :
-  (insertT y ys).ret.length = ys.length + 1  := by
+  (insertT y ys).ret.length = ys.length + 1 := by
   fun_induction insertT <;> grind
 
 lemma list_length (xs : List ℕ) : (IST xs).ret.length = xs.length := by
   fun_induction IST <;> grind
 
-theorem time_IS (xs : List ℕ) : (IST xs).time ≤ (xs.length) * (xs.length) := by
+theorem time_IS (xs : List ℕ) : (IST xs).time ≤ xs.length * xs.length := by
   fun_induction IST
   · rfl
   · expose_names
-    simp_all only [TimeM.time_bind, List.length_cons]
-    grw [time_insert,ih1, list_length]
+    simp only [TimeM.time_bind, List.length_cons]
+    grw [ih1, time_insert, list_length]
     ring_nf
     omega
 
