@@ -92,9 +92,10 @@ def length {u v : V} : G.Walk u v → ℕ
   | cons _ q => q.length + 1
 
 /-- The first vertex of a walk belongs to the graph. -/
-theorem start_mem {u v : V} (p : G.Walk u v) : u ∈ G.vertexSet := by sorry
+theorem start_mem {u v : V} (p : G.Walk u v) : u ∈ G.vertexSet := by waterfall
+
 /-- The last vertex of a walk belongs to the graph. -/
-theorem end_mem {u v : V} (p : G.Walk u v) : v ∈ G.vertexSet := by sorry
+theorem end_mem {u v : V} (p : G.Walk u v) : v ∈ G.vertexSet := by waterfall
 
 end Walk
 
@@ -131,15 +132,25 @@ def append {u v w : V} : G.Walk u v → G.Walk v w → G.Walk u w
 
 /-- Exercise: the length of appended walks is the sum of their lengths. -/
 lemma length_append {u v w : V} (p : G.Walk u v) (q : G.Walk v w) :
-    (p.append q).length = p.length + q.length := by sorry
+    (p.append q).length = p.length + q.length := by
+    fun_induction p.append q with
+    | case1 a hu q => simp_all [SimpleDiGraph.Walk.length]
+    | case2 a v_1 v_2 h p q
+      ih1 =>
+      simp_all [SimpleDiGraph.Walk.length, SimpleDiGraph.Walk.append, SimpleDiGraph.Adj]
+      omega
 
 end Walk
 
 -- Do it together: compose the two witness walks.
 @[trans]
 theorem reachable_trans {u v w : V} (huv : G.Reachable u v)
-    (hvw : G.Reachable v w) : G.Reachable u w := by sorry
-
+    (hvw : G.Reachable v w) : G.Reachable u w := by
+    obtain ⟨p⟩ := huv
+    obtain ⟨q⟩ := hvw
+    simp only [Reachable]
+    refine Nonempty.intro ?_
+    exact p.append q
 
 
 -- Exercise: characterize strong connectivity using a hub.

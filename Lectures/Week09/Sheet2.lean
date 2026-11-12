@@ -165,7 +165,14 @@ lemma bfs_rec_preserves_invariants (G : SimpleDiGraph (Fin n)) [DecidableRel G.A
     (queue : List (Fin n)) (visited : Finset (Fin n))
     (hvisited_reachable : ∀ x ∈ visited, G.Reachable r x)
     (hqueue_subset_visited : ∀ x ∈ queue, x ∈ visited) :
-    ∀ x ∈ bfs_rec G queue visited, G.Reachable r x := by sorry
+    ∀ x ∈ bfs_rec G queue visited, G.Reachable r x := by
+    fun_induction bfs_rec
+    · expose_names
+      assumption
+    · expose_names
+      apply ih1
+      · sorry
+      · sorry
 
 /-! ## 5. Initialization and the final theorem
 
@@ -181,7 +188,12 @@ is about the *result of the entire remaining execution*.
 /-- Soundness: the mathematical BFS returns only vertices reachable from r. -/
 theorem bfs_sound (G : SimpleDiGraph (Fin n)) [DecidableRel G.Adj]
     (r : Fin n) (hr : r ∈ G.vertexSet) :
-    ∀ v ∈ bfs G r, G.Reachable r v := by sorry
+    ∀ v ∈ bfs G r, G.Reachable r v := by
+    apply bfs_rec_preserves_invariants
+    · simp [Reachable]
+      refine Nonempty.intro ?_
+      exact Walk.nil hr
+    · simp
 
 /-- Completeness: BFS returns every vertex reachable from the root. -/
 -- Exercise
