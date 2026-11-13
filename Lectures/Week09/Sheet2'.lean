@@ -167,20 +167,11 @@ lemma bfs_rec_preserves_invariants (G : SimpleDiGraph (Fin n)) [DecidableRel G.A
     (hqueue_subset_visited : ∀ x ∈ queue, x ∈ visited) :
     ∀ x ∈ bfs_rec G queue visited, G.Reachable r x := by
     fun_induction bfs_rec
-    · expose_names
-      simp_all only [List.not_mem_nil, IsEmpty.forall_iff, implies_true]
+    · assumption
     · expose_names
       apply ih1
-      · intro x hx
-        simp only [Finset.mem_union, visited'] at hx
-        cases hx
-        · rename_i h
-          grind
-        · rename_i h
-          simp only [Finset.mem_sdiff, mem_outNeighbors, new_neighbors] at h
-          have: G.Reachable r u := by grind
-          apply reachable_step G this h.1
-      · simp_all [visited',queue']
+      · waterfall [reachable_step,mem_outNeighbors]
+      · simp_all [queue']
         grind
 
 
@@ -207,9 +198,30 @@ theorem bfs_sound (G : SimpleDiGraph (Fin n)) [DecidableRel G.Adj]
   · simp only [List.mem_cons, List.not_mem_nil, or_false, Finset.mem_singleton, imp_self,
     implies_true]
 
+lemma bfs_rec_closed_combined
+    (G : SimpleDiGraph (Fin n)) [DecidableRel G.Adj]
+    (queue : List (Fin n)) (visited : Finset (Fin n))
+    (hfrontier :
+      ∀ u ∈ visited, ∀ v, G.Adj u v → u ∈ queue ∨ v ∈ visited) :
+    (∀ x ∈ visited, x ∈ bfs_rec G queue visited) ∧
+    (∀ u ∈ bfs_rec G queue visited, ∀ v,
+      G.Adj u v → v ∈ bfs_rec G queue visited) := by
+  waterfall [mem_outNeighbors, Finset.mem_toList]
+
+lemma reachable_mem_of_closed
+    (G : SimpleDiGraph (Fin n)) (s : Finset (Fin n))
+    (hclosed : ∀ u ∈ s, ∀ v, G.Adj u v → v ∈ s)
+    (u v : Fin n) (hu : u ∈ s) :
+    G.Reachable u v → v ∈ s := by
+  rintro ⟨p⟩
+  waterfall
+
 /-- Completeness: BFS returns every vertex reachable from the root. -/
--- Exercise
-theorem bfsVertices_complete (G : SimpleDiGraph (Fin n)) (r v : Fin n) [DecidableRel G.Adj] :
-    G.Reachable r v → v ∈ bfs G r := by sorry
+theorem bfsVertices_complete
+    (G : SimpleDiGraph (Fin n)) (r v : Fin n)
+    [DecidableRel G.Adj] :
+    G.Reachable r v → v ∈ bfs G r := by
+  have h := bfs_rec_closed_combined G [r] {r} (by simp)
+  waterfall [bfs, reachable_mem_of_closed]
 
 end SimpleDiGraph.MathematicalBFS
