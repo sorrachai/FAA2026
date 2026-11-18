@@ -22,6 +22,8 @@ structure Combine (α : Type) where
 def double {α} (s : Combine α) (x : α) : α :=
   s.combine x x
 
+#check double
+
 def natadd : Combine ℕ := {combine := fun a ↦ fun b ↦ a+b}
 def mul : Combine ℕ := {combine := fun a ↦ fun b ↦ a*b}
 def string : Combine String := {combine := fun a ↦ fun b ↦ a++b}
@@ -43,7 +45,6 @@ class Combine (α : Type) where
 -- now, combine as an implicit structure which depends on `α`
 
 -- We can give each instantiation as a rule
-
 instance instCombineNat : Combine Nat where
   combine := Nat.add
 

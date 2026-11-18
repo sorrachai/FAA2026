@@ -34,7 +34,10 @@ class inductive Decidable (p : Prop) where
 
 -- We can construct decisions directly.
 -- Think of `typeclass instance` as a term of the requested class type
-instance : Decidable (3 < 8) := .isTrue (by omega)
+instance : Decidable (3 < 8) := by
+  apply Decidable.isTrue
+  omega
+
 instance : Decidable (8 < 3) := .isFalse (by omega)
 
 /-!
@@ -47,7 +50,13 @@ does not necessarily contain a proof of p: it might contain a proof of ¬p.
 #check Decidable (9 ≤ 4)
 
 -- Exercise 2: prove this
-instance (p q : Prop) [Decidable p] [Decidable q] : Decidable (p ∧ q) := sorry
+instance (p q : Prop) [Decidable p] [Decidable q] : Decidable (p ∧ q) := by
+  expose_names
+  cases inst <;> cases inst_1 <;> expose_names
+  · apply Decidable.isFalse; tauto
+  · apply Decidable.isFalse; tauto
+  · apply Decidable.isFalse; tauto
+  · apply Decidable.isTrue; tauto
 
 /-!
 ## 2. Asking Lean to supply an instance
@@ -81,10 +90,12 @@ def InRange (n : Nat) : Prop :=
   10 ≤ n ∧ n < 20
 
 -- sometimes inferInstance does not unfold definition
-instance (n : Nat) : Decidable (InRange n) := sorry
+-- instance (n : Nat) : Decidable (InRange n) := by
+--   unfold InRange
+--   infer_instance
 
 instance (n : Nat) : Decidable (InRange n) :=
-  inferInstanceAs (Decidable (10 ≤ n ∧ n < 20))
+ inferInstanceAs (Decidable (10 ≤ n ∧ n < 20))
 
 -- #eval decide (InRange 15) -- true
 -- #eval decide (InRange 25) -- false
@@ -93,7 +104,7 @@ instance (n : Nat) : Decidable (InRange n) :=
 def classify (n : Nat) : String :=
   if InRange n then "inside" else "outside"
 
--- #eval classify 15 -- "inside"
+#eval classify 15 -- "inside"
 
 
 -- Classical reasoning can also supply Decidable p for any proposition p,

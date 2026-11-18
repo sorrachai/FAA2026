@@ -15,10 +15,10 @@ def has_sqrt (n : ℕ) : Prop := ∃ m : ℕ, m * m = n
 -- Lean has a universal way to extract the witness using axiom of choice:
 -- The side effect : non-constructive
 noncomputable
-def sqrt_if_perfect (n : ℕ) (h : has_sqrt n) : ℕ  := --by
+def sqrt_if_perfect (n : ℕ) (h : has_sqrt n) : ℕ :=
   --simp [has_sqrt] at h
-  -- obtain ⟨m,hm⟩ := h
-   h.choose
+  --obtain ⟨m,hm⟩ := h
+    h.choose
 -- obtain
 -- sorry --? How to extract the witness
 
@@ -41,7 +41,8 @@ def witness_perfect_spec (n : ℕ) (h : has_sqrt n) := h.choose_spec
 -- We can think of `Sort u` as a type with differnet level of universes.
 -- The first level of the universe is `Sort 0` which is `Prop`.
 
-#check Sort 0 -- is named as Prop
+#check Sort 0
+ -- is named as Prop
 #check Sort 1 -- is named as Type
 #check Sort 2 -- Types of types
 #check Sort 3
