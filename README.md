@@ -2,6 +2,27 @@
 
 Repository for the course [Formalizing Analysis of Algorithms](https://vvz.ethz.ch/Vorlesungsverzeichnis/lerneinheit.view?lerneinheitId=206318&semkez=2026W&ansicht=LEHRVERANSTALTUNGEN&lang=en), offered in Autumn Semester 2026 at ETH Zurich.
 
+## Tentative Lecture and Homework Schedule
+
+See the [course page](https://sites.google.com/view/sorrachai/teaching/formalizing-algo-2026) for schedule updates.
+
+| Date (2026) | Lecture | Topic | Remarks | Homework |
+| --- | --- | --- | --- | --- |
+| Sep 16 | 1 | [Introduction to Lean 4, Basic tactics](Lectures/Week01) | Olivier Fischer | 1 |
+| Sep 23 | 2 | [Propositional Logic Proofs, Set Theory](Lectures/Week02) | — | 2 |
+| Sep 30 | 3 | [Proof by Induction, Inductive Type](Lectures/Week03) | Olivier Fischer | 3 |
+| Oct 7 | 4 | [Functional Induction, Calculation Proofs](Lectures/Week04) | — | 4 |
+| Oct 14 | 5 | [Inductive Predicate](Lectures/Week05) | — | 5 |
+| Oct 21 | 6 | [Divide-and-Conquer](Lectures/Week06) | Project announcement | 6 |
+| Oct 28 | 7 | [Running Time Analysis](Lectures/Week07) | — | 7 |
+| Nov 4 | 8 | [Project Discussion](Lectures/Week08) | Code design homework | 8 |
+| Nov 11 | 9 | [Graph Algorithms](Lectures/Week09) | Project proposal due Nov 13 | 9 |
+| Nov 18 | 10 | [Computability in Lean](Lectures/Week10) | — | 10 |
+| Nov 25 | 11 | AI for Math (1) | Guest lecturer Goran Zuzic | — |
+| Dec 2 | 12 | AI for Math (2) | Guest lecturer Lazar Milikic | — |
+| Dec 9 | 13 | Project Presentations (1) | — | — |
+| Dec 16 | 14 | Project Presentations (2) | — | — |
+
 ## Organization of the Homework
 
 - New homework are uploaded to this repository every Wednesday. You submit your solutions on Moodle by 23:59 on the Friday of the following week, which gives you nine days to work on them.
